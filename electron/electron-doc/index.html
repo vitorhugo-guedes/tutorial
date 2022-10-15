@@ -15,17 +15,25 @@
     <title>Electron App</title>
   </head>
   <body>
+    <!-- Basic tutorial -->
     <h1>Electron Doc Tutorials</h1>
     <h5>Versions</h5>
     <p id="info"></p>
 
     <hr />
 
+    <!-- IPC one-way pattern -->
     <label>
       Title:
       <input type="text" id="title" />
     </label>
     <button id="setTitleBtn" type="button">Set</button>
+
+    <hr />
+
+    <!-- IPC two-way pattern -->
+    <button type="button" id="openFileBtn">Open a file</button>
+    File path: <strong id="filePath"></strong>
   </body>
   <script src="./render.js"></script>
 </html>

@@ -8,7 +8,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return ipcRenderer.invoke("ping");
   },
   setTitleRenderer: (title) => {
-    // Send a message through setTitle channel
+    // Send a message through setTitle channel (one-way method)
     return ipcRenderer.send("setTitle", title);
   },
+  // Send a message through dialog:openFile channel
+  // and expects a async response from Main
+  openFile: () => ipcRenderer.invoke("dialog:openFile"),
 });

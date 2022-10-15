@@ -1,5 +1,30 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
+
+// Renderer to Main: One-way IPC pattern
+function handleSetTitle(event, title) {
+  // Get the window through event sender
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+
+  // Set the browser window title
+  win.setTitle(title);
+}
+
+// Renderer to Main: Two-way IPC pattern
+async function handleFileOpen() {
+  // call showOpenDialog function and get the filepath
+  const { canceled, filePaths } = await dialog.showOpenDialog();
+
+  if (canceled) {
+    return;
+  } else {
+    // returns the path from selected file
+    return filePaths[0];
+  }
+}
+
+// Main to Renderer IPC pattern
 
 const createWindow = () => {
   const mainWin = new BrowserWindow({
@@ -14,19 +39,13 @@ const createWindow = () => {
   mainWin.loadFile("index.html");
 };
 
-function handleSetTitle(event, title) {
-  // Get the window through event sender
-  const webContents = event.sender;
-  const win = BrowserWindow.fromWebContents(webContents);
-
-  // Set the browser window title
-  win.setTitle(title);
-}
-
 app.whenReady().then(() => {
+  // Handle invoke in dialog:openFile channel and call handleFileOpen
+  ipcMain.handle("dialog:openFile", handleFileOpen);
+
   createWindow();
 
-  // Set a listener to setTitle channel
+  // Listen to setTitle channel and call handleSetTitle
   ipcMain.on("setTitle", handleSetTitle);
 
   app.on("activate", () => {

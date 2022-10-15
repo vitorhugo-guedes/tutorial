@@ -22,7 +22,7 @@
 
     <hr />
 
-    <!-- IPC one-way pattern -->
+    <!-- Renderer to Main: IPC one-way pattern -->
     <label>
       Title:
       <input type="text" id="title" />
@@ -31,9 +31,14 @@
 
     <hr />
 
-    <!-- IPC two-way pattern -->
+    <!-- Renderer to Main: IPC two-way pattern -->
     <button type="button" id="openFileBtn">Open a file</button>
     File path: <strong id="filePath"></strong>
+
+    <hr />
+
+    <!-- Main to Renderer: IPC pattern -->
+    Current value: <strong id="counter">0</strong>
   </body>
   <script src="./render.js"></script>
 </html>

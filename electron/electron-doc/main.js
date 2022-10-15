@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, Menu } = require("electron");
 const path = require("path");
 
 // Renderer to Main: One-way IPC pattern
@@ -24,8 +24,6 @@ async function handleFileOpen() {
   }
 }
 
-// Main to Renderer IPC pattern
-
 const createWindow = () => {
   const mainWin = new BrowserWindow({
     width: 800,
@@ -34,14 +32,39 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+
+  // Main to Renderer IPC pattern
+  const menu = Menu.buildFromTemplate([
+    {
+      label: "Counter Menu",
+      submenu: [
+        {
+          click: () => mainWin.webContents.send("update-counter", 1),
+          label: "increment",
+        },
+        {
+          click: () => mainWin.webContents.send("update-counter", -1),
+          label: "decrement",
+        },
+      ],
+    },
+  ]);
+
   ipcMain.handle("ping", () => "pong");
 
+  Menu.setApplicationMenu(menu);
   mainWin.loadFile("index.html");
+
+  mainWin.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {
   // Handle invoke in dialog:openFile channel and call handleFileOpen
   ipcMain.handle("dialog:openFile", handleFileOpen);
+
+  ipcMain.on("counter-value", (_ev, value) => {
+    console.log(value);
+  });
 
   createWindow();
 

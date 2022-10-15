@@ -14,4 +14,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Send a message through dialog:openFile channel
   // and expects a async response from Main
   openFile: () => ipcRenderer.invoke("dialog:openFile"),
+
+  handleCounter: (callback) => ipcRenderer.on("update-counter", callback),
 });

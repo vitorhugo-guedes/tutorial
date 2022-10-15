@@ -33,3 +33,11 @@ openFileBtn.addEventListener("click", async () => {
 });
 
 // Main to Renderer IPC pattern
+const counter = document.getElementById("counter");
+
+window.electronAPI.handleCounter((ev, value) => {
+  const prevValue = Number(counter.innerText);
+  const newValue = prevValue + value;
+  counter.innerText = newValue;
+  ev.sender.send("counter-value", newValue);
+});
